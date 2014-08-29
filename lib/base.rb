@@ -14,9 +14,26 @@ class DocYoSelf
     @tests = []
   end
 
+  def output_testcases_to_file
+    docs = self.class::Conf.output_file
+    raise 'No output file specific for DocYoSelf' unless docs
+    File.delete docs if File.exists? docs
+    write_to_file
+  end
+
+  def write_to_file
+    File.open('documentation.md', 'a') do |file|
+      @tests.each do |test|
+        file.write(test.compile_template)
+      end
+    end
+  end
+
 # = = = =
 
   def self.finish!
+    current.sort_by_url!
+    current.output_testcases_to_file
     current.clean_up!
   end
 

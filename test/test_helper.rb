@@ -8,6 +8,7 @@ class DysTest < Minitest::Unit::TestCase
   def setup
     DocYoSelf.config do |c|
       c.template_file = 'test/fake_template.md'
+      c.output_file   = 'test/fake_output.md'
     end
   end
 

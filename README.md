@@ -17,12 +17,18 @@ DocYoSelf.config do |c|
 end
 ```
 
-To run doc generation after every controller spec, put this into your `teardown` method.
+To run doc generation after every controller spec, put this into your `teardown` method. Or whatever method your test framework of choice will run after *every test*.
 
 ```ruby
 def teardown
   DocYoSelf.run!
 end 
+```
+
+Then put this at the bottom of your `test_helper.rb`:
+
+```ruby
+DocYoSelf.finish!
 ```
 
 Or put it individually into only certain tests...

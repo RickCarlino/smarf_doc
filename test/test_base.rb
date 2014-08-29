@@ -54,4 +54,16 @@ class TestBase < DysTest
     assert_equal 'api/noskip', tests.first.request.path,
       "DYS Did not skip tests."
   end
+
+  def test_note
+    file = DocYoSelf::Conf.output_file
+    tests= DocYoSelf.current.tests
+    first = Request.new("GET", {id: 12}, 'api/skip')
+    last  = Request.new("GET", {id: 12}, 'api/noskip')
+    DocYoSelf.note "안녕하세요"
+    DocYoSelf.run!(first, response)
+    DocYoSelf.run!(last, response)
+    assert_includes tests.first.compile_template, "안녕하세요",
+      "Could not find note in documentation."
+  end
 end

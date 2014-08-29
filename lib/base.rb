@@ -15,14 +15,23 @@ class DocYoSelf
     @tests = []
   end
 
+  def note(msg)
+    @note = msg || ''
+  end
+
   def run!(request, response)
     @skip += 1
     return if @skip == 2 # Gross.
-    test = self.class::TestCase.new(request, response)
-    test.template = self.class::Conf.template
-    self.tests << test
+    add_test_case(request, response, @note)
+    @note = ''
     @skip = 0
     self
+  end
+
+  def add_test_case(request, response, note)
+    test = self.class::TestCase.new(request, response, note)
+    test.template = self.class::Conf.template
+    self.tests << test
   end
 
   def skip
@@ -58,6 +67,10 @@ class DocYoSelf
 
   def self.skip
     current.skip
+  end
+
+  def self.note(msg)
+    current.note(msg)
   end
 
   def self.current

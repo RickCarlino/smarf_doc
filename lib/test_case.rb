@@ -1,11 +1,11 @@
 require 'erb'
 
 class DocYoSelf::TestCase
-  attr_reader :request, :response, :created_at
+  attr_reader :request, :response, :created_at, :note
   attr_accessor :template
 
-  def initialize(request, response)
-    @request, @response = request, response
+  def initialize(request, response, note = '')
+    @request, @response, @note = request, response, note
     @created_at         = Time.now
   end
 

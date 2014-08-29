@@ -60,7 +60,7 @@ end
 
 ```ruby
 def test_stuff
-  doc_notes "This API endpoint does things."
+  DocYoSelf.note "This API endpoint does things."
   # Blahhh
 end
 ```

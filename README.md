@@ -2,6 +2,8 @@
 
 An auto documentation for Rails. Pop it into your test suite and watch it amaze.
 
+Time for this project was provided by my employer, [SmashingBoxes](http://smashingboxes.com/). What a great place to work.
+
 # Limitations
 
  * **Current focus is MiniTest**. Probably will work with Rspec too, but that's not our focus right now.

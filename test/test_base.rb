@@ -27,4 +27,12 @@ class TestBase < DysTest
     assert_equal ["api/aaa", "api/zzz"], results,
       "Did not sort test cases by request URL"
   end
+
+  def test_finish!
+    first = Request.new("GET", {id: 12}, 'api/aaa')
+    last  = Request.new("GET", {id: 12}, 'api/zzz')
+    DocYoSelf.run!(first, response)
+    DocYoSelf.run!(last, response)
+    binding.pry
+  end
 end

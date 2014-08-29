@@ -49,7 +49,7 @@ It will log all requests and responses by default, but you can add some **option
 
 ```ruby
 def test_stuff
-  skip_docs
+  DocYoSelf.skip
   # Blahhh
 end
 ```

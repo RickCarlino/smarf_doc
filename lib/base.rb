@@ -2,6 +2,7 @@ class DocYoSelf
   attr_accessor :tests
   def initialize
     @tests = []
+    @skip = 0 # <= Hate this.
   end
 
   def sort_by_url!
@@ -12,6 +13,20 @@ class DocYoSelf
 
   def clean_up!
     @tests = []
+  end
+
+  def run!(request, response)
+    @skip += 1
+    return if @skip == 2 # Gross.
+    test = self.class::TestCase.new(request, response)
+    test.template = self.class::Conf.template
+    self.tests << test
+    @skip = 0
+    self
+  end
+
+  def skip
+    @skip += 1
   end
 
   def output_testcases_to_file
@@ -35,14 +50,14 @@ class DocYoSelf
     current.sort_by_url!
     current.output_testcases_to_file
     current.clean_up!
-
   end
 
   def self.run!(request, response)
-    test = self::TestCase.new(request, response)
-    test.template = self::Conf.template
-    current.tests << test
-    self
+    current.run!(request, response)
+  end
+
+  def self.skip
+    current.skip
   end
 
   def self.current

@@ -40,4 +40,18 @@ class TestBase < DysTest
     assert_includes File.read(file), "You can use ERB",
       "Did not utilize template to output docs."
   end
+
+  def test_skip
+    file = DocYoSelf::Conf.output_file
+    tests= DocYoSelf.current.tests
+    first = Request.new("GET", {id: 12}, 'api/skip')
+    last  = Request.new("GET", {id: 12}, 'api/noskip')
+    DocYoSelf.skip
+    DocYoSelf.run!(first, response)
+    DocYoSelf.run!(last, response)
+    assert_equal 1, tests.length,
+      "DYS Did not skip tests."
+    assert_equal 'api/noskip', tests.first.request.path,
+      "DYS Did not skip tests."
+  end
 end

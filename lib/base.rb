@@ -22,7 +22,7 @@ class DocYoSelf
   end
 
   def write_to_file
-    File.open('documentation.md', 'a') do |file|
+    File.open(self.class::Conf.output_file, 'a') do |file|
       @tests.each do |test|
         file.write(test.compile_template)
       end
@@ -35,6 +35,7 @@ class DocYoSelf
     current.sort_by_url!
     current.output_testcases_to_file
     current.clean_up!
+
   end
 
   def self.run!(request, response)

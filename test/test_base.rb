@@ -29,10 +29,15 @@ class TestBase < DysTest
   end
 
   def test_finish!
+    file = DocYoSelf::Conf.output_file
     first = Request.new("GET", {id: 12}, 'api/aaa')
     last  = Request.new("GET", {id: 12}, 'api/zzz')
     DocYoSelf.run!(first, response)
     DocYoSelf.run!(last, response)
-    binding.pry
+    DocYoSelf.finish!
+    assert File.exists?(file),
+      "Did not create an output file after finish!()ing"
+    assert_includes File.read(file), "You can use ERB",
+      "Did not utilize template to output docs."
   end
 end

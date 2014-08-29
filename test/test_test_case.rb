@@ -15,6 +15,13 @@ class TestTestCase < DysTest
       "Could not compile template"
   end
 
+  def test_compile_with_file
+    DocYoSelf.config { |c| c.template_file = 'test/fake_template.md' }
+    test = DocYoSelf::TestCase.new(request, response)
+    test.template = DocYoSelf::Conf.template
+    assert_includes test.compile_template, "use ERB"
+  end
+
   def test_created_at
     assert dys.created_at.is_a?(Time)
   end

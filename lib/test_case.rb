@@ -10,6 +10,6 @@ class DocYoSelf::TestCase
   end
 
   def compile_template
-    ERB.new(template).result
+    ERB.new(template).result binding
   end
 end

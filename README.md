@@ -30,7 +30,7 @@ To run doc generation after every controller spec, put this into your `teardown`
 ```ruby
 class ActionController::TestCase < ActiveSupport::TestCase
   def teardown
-    DocYoSelf.run!
+    DocYoSelf.run!(request, response)
   end
 end
 ```
@@ -47,7 +47,7 @@ Or put it individually into only certain tests...
 def test_some_api
   get :index, :users
   assert response.status == 200
-  DocYoSelf.run!
+  DocYoSelf.run!(request, response)
 end
 ```
 

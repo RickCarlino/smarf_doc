@@ -12,25 +12,33 @@ Time for this project was provided by my employer, [SmashingBoxes](http://smashi
 
 ## Setup
 
+In your gemfile:
+`gem 'doc_yo_self', group: :test`
+
+In  `test_helper.rb`:
 ```ruby
 DocYoSelf.config do |c|
   c.template_file = 'test/template.md.erb'
-  c.output        = 'api_docs.md'
+  c.output_file   = 'api_docs.md'
 end
 ```
+
+See test/fake_template.md for template examples.
 
 To run doc generation after every controller spec, put this into your `teardown` method. Or whatever method your test framework of choice will run after *every test*.
 
 ```ruby
-def teardown
-  DocYoSelf.run!
-end 
+class ActionController::TestCase < ActiveSupport::TestCase
+  def teardown
+    DocYoSelf.run!
+  end
+end
 ```
 
 Then put this at the bottom of your `test_helper.rb`:
 
 ```ruby
-DocYoSelf.finish!
+MiniTest::Unit.after_tests { DocYoSelf.finish! }
 ```
 
 Or put it individually into only certain tests...
@@ -60,7 +68,7 @@ end
 
 ```ruby
 def test_stuff
-  DocYoSelf.note "This API endpoint does things."
+  DocYoSelf.note "안녕하세요. This is a note."
   # Blahhh
 end
 ```

@@ -2,15 +2,18 @@
 
 An auto documentation for Rails. Pop it into your test suite and watch it amaze.
 
-Current focus is MiniTest. *Probably* will work with Rspec too, but that's not our focus right now.
+# Limitations
+
+ * **Current focus is MiniTest**. Probably will work with Rspec too, but that's not our focus right now.
+ * **Probably not thread safe**. Thread safety isn't a focus for this project right now. Pull requests welcome :-).
+
 
 ## Setup
 
 ```ruby
 DocYoSelf.config do |c|
-  c.template     = 'test/template.md.erb'
-  c.success_only = true # The Default
-  c.output       = 'api_docs.md'
+  c.template_file = 'test/template.md.erb'
+  c.output        = 'api_docs.md'
 end
 ```
 

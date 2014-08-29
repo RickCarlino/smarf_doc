@@ -1,8 +1,4 @@
-class DocYoSelf
+require 'base'
+require 'conf'
+require 'test_case'
 
-  def initialize(request, response)
-  end
-
-  def template(string)
-  end
-end

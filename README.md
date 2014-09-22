@@ -59,7 +59,7 @@ Put this in your `spec_helper` and smoke it.
 ```ruby
 RSpec.configure do |config|
   config.after(:each, type: :controller) do
-    DocYoSelf.run!(request, response) if request.url.include?('/api/')
+    DocYoSelf.run!(request, response)
   end
 
   config.after(:suite) { DocYoSelf.finish! }

@@ -6,7 +6,6 @@ Time for this project was provided by my employer, [SmashingBoxes](http://smashi
 
 # Limitations
 
- * **Current focus is MiniTest**. Probably will work with Rspec too, but that's not our focus right now.
  * **Probably not thread safe**. Thread safety isn't a focus for this project right now. Pull requests welcome :-).
 
 

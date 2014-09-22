@@ -27,6 +27,8 @@ See test/fake_template.md for template examples.
 
 To run doc generation after every controller spec, put this into your `teardown` method. Or whatever method your test framework of choice will run after *every test*.
 
+## For Minitest Folks
+
 ```ruby
 class ActionController::TestCase < ActiveSupport::TestCase
   def teardown
@@ -50,6 +52,21 @@ def test_some_api
   DocYoSelf.run!(request, response)
 end
 ```
+
+## For RSpec Folks
+
+Put this in your `spec_helper` and smoke it.
+
+```ruby
+RSpec.configure do |config|
+  config.after(:each, type: :controller) do
+    DocYoSelf.run!(request, response) if request.url.include?('/api/')
+  end
+
+  config.after(:suite) { DocYoSelf.finish! }
+end
+```
+
 
 ## Usage
 

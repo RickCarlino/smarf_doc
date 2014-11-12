@@ -18,7 +18,7 @@ In  `test_helper.rb`:
 ```ruby
 DocYoSelf.config do |c|
   c.template_file = 'test/template.md.erb'
-  c.output_file   = 'api_docs.md'
+  c.output_folder   = 'wiki'
 end
 ```
 
@@ -28,28 +28,29 @@ To run doc generation after every controller spec, put this into your `teardown`
 
 ## For Minitest Folks
 
-```ruby
-class ActionController::TestCase < ActiveSupport::TestCase
-  def teardown
-    DocYoSelf.run!(request, response)
-  end
-end
-```
 
-Then put this at the bottom of your `test_helper.rb`:
+At the bottom of your `test_helper.rb`:
 
 ```ruby
 MiniTest::Unit.after_tests { DocYoSelf.finish! }
 ```
 
-Or put it individually into only certain tests...
+Then
 
 ```ruby
 def test_some_api
   get :index, :users
   assert response.status == 200
-  DocYoSelf.run!(request, response)
+  DocYoSelf.new(self)
 end
+```
+
+Or
+
+```ruby
+  def teardown
+    DocYoSelf.new(self)
+  end
 ```
 
 ## For RSpec Folks
@@ -71,20 +72,21 @@ end
 
 It will log all requests and responses by default, but you can add some **optional** parameters as well.
 
-### Skipping documentation
-
-```ruby
-def test_stuff
-  DocYoSelf.skip
-  # Blahhh
-end
-```
 
 ## Adding notes
+Defaults to the test name
+```ruby
+DocYoSelf.new(self, note: "This is fun")
+```
+
+## Output file
+Defaults to the class name
+```ruby
+DocYoSelf.new(self, output_file: "fun.md")
+```
+
+## Response
 
 ```ruby
-def test_stuff
-  DocYoSelf.note "안녕하세요. This is a note."
-  # Blahhh
-end
+DocYoSelf.new(self, response: json)
 ```

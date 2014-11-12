@@ -1,5 +1,6 @@
 class DocYoSelf
   @@tests = {}
+  @@lock = ::Mutex.new
   attr_accessor :request, :response, :note, :file
 
   # == Usage
@@ -32,9 +33,10 @@ class DocYoSelf
       raise "No DocYoSelf output_folder specified" if folder.blank?
       file_path = "#{folder}/#{file}" 
     end
-
-    @@tests[file_path] ||= []
-    @@tests[file_path] << self
+    @@lock.synchronize do
+      @@tests[file_path] ||= []
+      @@tests[file_path] << self
+    end
   end
 
   def compile_template
@@ -50,7 +52,9 @@ class DocYoSelf
     end
 
     def clean_up!
-      @@tests = {}
+      @@lock.synchronize do
+        @@tests = {}
+      end
     end
 
     def sort_by_url(tests)

@@ -1,83 +1,88 @@
 class DocYoSelf
-  attr_accessor :tests
-  def initialize
-    @tests = []
-    @skip = 0 # <= Hate this.
-  end
+  @@tests = {}
+  attr_accessor :request, :response, :note, :file
 
-  def sort_by_url!
-    @tests.sort! do |x, y|
-      x.request.path <=> y.request.path
+  # == Usage
+  # DocYoSelf.new(self)
+  #
+  def initialize(caller, options = {})
+    @file = options[:output_file]
+    @request = options[:request] 
+    @response = options[:response] 
+    @note = options[:note]
+
+    if caller
+      @file ||= caller.class.name.underscore.gsub('/', '_').sub(/_test$/,'') + '.md'
+      @request ||= caller.request
+      @response ||= caller.response
+      @note ||= caller.method_name.sub(/^test[\d_]*/, '').gsub('_', ' ')
     end
+    @file ||= self.class::Conf.output_file
+
+    add_to_tests
   end
 
-  def clean_up!
-    @tests = []
+  def add_to_tests
+    raise "No DocYoSelf output_file specified" if file.blank?
+
+    if file[/\//]
+      file_path = file #legacy support
+    else
+      folder = self.class::Conf.output_folder.try(:sub, /\/$/, '')
+      raise "No DocYoSelf output_folder specified" if folder.blank?
+      file_path = "#{folder}/#{file}" 
+    end
+
+    @@tests[file_path] ||= []
+    @@tests[file_path] << self
   end
 
-  def note(msg)
-    @note = msg || ''
-  end
-
-  def run!(request, response)
-    @skip += 1
-    return if @skip == 2 # Gross.
-    add_test_case(request, response, @note)
-    @note = ''
-    @skip = 0
-    self
-  end
-
-  def add_test_case(request, response, note)
+  def compile_template
     test = self.class::TestCase.new(request, response, note)
     test.template = self.class::Conf.template
-    self.tests << test
+    test.compile_template
   end
 
-  def skip
-    @skip += 1
-  end
+  # START CLASS METHODS
+  class << self
+    def tests
+      @@tests
+    end
 
-  def output_testcases_to_file
-    docs = self.class::Conf.output_file
-    raise 'No output file specific for DocYoSelf' unless docs
-    File.delete docs if File.exists? docs
-    write_to_file
-  end
+    def clean_up!
+      @@tests = {}
+    end
 
-  def write_to_file
-    File.open(self.class::Conf.output_file, 'a') do |file|
-      @tests.each do |test|
-        file.write(test.compile_template)
+    def sort_by_url(tests)
+      tests.sort! do |x, y|
+        x.request.path <=> y.request.path
       end
     end
-  end
 
-# = = = =
+    def output_testcases_to_file
+      @@tests.each do |file, tests|
+        File.delete file if File.exists? file
+        File.open(file, 'a') do |file|
+          sort_by_url(tests).each do |test|
+            file.write(test.compile_template)
+          end
+        end
+      end
+    end
 
-  def self.finish!
-    current.sort_by_url!
-    current.output_testcases_to_file
-    current.clean_up!
-  end
+    def finish!
+      output_testcases_to_file
+      clean_up!
+    end
 
-  def self.run!(request, response)
-    current.run!(request, response)
-  end
+    #legacy support
+    def run!(request, response, output_file = nil)
+      new(nil, request: request, response: response, output_file: output_file)
+    end
 
-  def self.skip
-    current.skip
+    def config(&block)
+      yield(self::Conf)
+    end
   end
-
-  def self.note(msg)
-    current.note(msg)
-  end
-
-  def self.current
-    Thread.current[:dys_instance] ||= self.new
-  end
-
-  def self.config(&block)
-    yield(self::Conf)
-  end
+  # END CLASS METHODS
 end

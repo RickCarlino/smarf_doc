@@ -1,6 +1,6 @@
 class DocYoSelf::Conf
   class << self
-    attr_accessor :template_file, :output_file
+    attr_accessor :template_file, :output_file, :output_folder
 
     @output_file = 'documentation.md'
 

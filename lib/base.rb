@@ -40,9 +40,9 @@ class DocYoSelf
   end
 
   def compile_template
-    test = self.class::TestCase.new(request, response, note)
-    test.template = self.class::Conf.template
-    test.compile_template
+    template = self.class::Conf.template
+    raise "No DocYoSelf template specified" unless template
+    ERB.new(template).result binding
   end
 
   # START CLASS METHODS

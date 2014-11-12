@@ -64,7 +64,7 @@ class DocYoSelf
     end
 
     def output_testcases_to_file
-      @@tests.each do |file, tests|
+      tests.each do |file, tests|
         File.delete file if File.exists? file
         File.open(file, 'a') do |file|
           sort_by_url(tests).each do |test|

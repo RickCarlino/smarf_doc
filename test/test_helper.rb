@@ -1,19 +1,19 @@
 require "simplecov"
 SimpleCov.start
-require_relative '../lib/doc_yo_self'
+require_relative '../lib/smarf_doc'
 require 'minitest/autorun'
 require 'pry'
 
-class DysTest < Minitest::Unit::TestCase
+class SmarfDocTest < Minitest::Test
   def setup
-    DocYoSelf.config do |c|
+    SmarfDoc.config do |c|
       c.template_file = 'test/fake_template.md'
       c.output_file   = 'test/fake_output.md'
     end
   end
 
   def teardown
-    DocYoSelf.finish!
+    SmarfDoc.finish!
   end
 
   # Include some fake structs that act like response/request objects.

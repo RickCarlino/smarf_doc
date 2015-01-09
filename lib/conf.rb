@@ -1,4 +1,4 @@
-class DocYoSelf::Conf
+class SmarfDoc::Conf
   class << self
     attr_accessor :template_file, :output_file
 

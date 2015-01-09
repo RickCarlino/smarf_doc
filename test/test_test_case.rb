@@ -1,9 +1,9 @@
 require_relative "test_helper"
 
-class TestTestCase < DysTest
+class TestTestCase < SmarfDocTest
 
   def dys
-    @dys ||= DocYoSelf::TestCase.new(request, response)
+    @dys ||= SmarfDoc::TestCase.new(request, response)
   end
 
   def test_compile_template
@@ -16,9 +16,9 @@ class TestTestCase < DysTest
   end
 
   def test_compile_with_file
-    DocYoSelf.config { |c| c.template_file = 'test/fake_template.md' }
-    test = DocYoSelf::TestCase.new(request, response)
-    test.template = DocYoSelf::Conf.template
+    SmarfDoc.config { |c| c.template_file = 'test/fake_template.md' }
+    test = SmarfDoc::TestCase.new(request, response)
+    test.template = SmarfDoc::Conf.template
     assert_includes test.compile_template, "use ERB"
   end
 

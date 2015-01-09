@@ -1,22 +1,25 @@
-# Doc Yo Self
+# SmarfDoc
 
-An auto documentation for Rails. Pop it into your test suite and watch it amaze.
+(Formerly 'DocYoSelf')
 
-Time for this project was provided by my employer, [SmashingBoxes](http://smashingboxes.com/). What a great place to work.
+[Imgur](http://i.imgur.com/f5mzeRU.png)
 
-# Limitations
+Too many docs spoil the broth.
 
- * **Probably not thread safe**. Thread safety isn't a focus for this project right now. Pull requests welcome :-).
+SmarfDoc lets you turn your controller tests into API docs _without making changes to your test suite or how you write tests_.
 
+Pop it into your test suite and watch it amaze.
+
+Time for this project was provided by my employer, [SmashingBoxes](http://smashingboxes.com/). What a great place to work!
 
 ## Setup
 
 In your gemfile:
-`gem 'doc_yo_self', group: :test`
+`gem 'smarf_doc', group: :test`
 
 In  `test_helper.rb`:
 ```ruby
-DocYoSelf.config do |c|
+SmarfDoc.config do |c|
   c.template_file = 'test/template.md.erb'
   c.output_file   = 'api_docs.md'
 end
@@ -26,7 +29,9 @@ See test/fake_template.md for template examples.
 
 To run doc generation after every controller spec, put this into your `teardown` method. Or whatever method your test framework of choice will run after *every test*.
 
-## For Minitest Folks
+## Minitest Usage
+
+Running it for every test case:
 
 ```ruby
 class ActionController::TestCase < ActiveSupport::TestCase
@@ -36,13 +41,7 @@ class ActionController::TestCase < ActiveSupport::TestCase
 end
 ```
 
-Then put this at the bottom of your `test_helper.rb`:
-
-```ruby
-MiniTest::Unit.after_tests { DocYoSelf.finish! }
-```
-
-Or put it individually into only certain tests...
+..or if you only want to run it on certain tests, try this:
 
 ```ruby
 def test_some_api
@@ -52,17 +51,23 @@ def test_some_api
 end
 ```
 
-## For RSpec Folks
+Then put this at the bottom of your `test_helper.rb`:
+
+```ruby
+MiniTest::Unit.after_tests { DocYoSelf.finish! }
+```
+
+## Rspec Usage
 
 Put this in your `spec_helper` and smoke it.
 
 ```ruby
 RSpec.configure do |config|
   config.after(:each, type: :controller) do
-    DocYoSelf.run!(request, response)
+    SmarfDoc.run!(request, response)
   end
 
-  config.after(:suite) { DocYoSelf.finish! }
+  config.after(:suite) { SmarfDoc.finish! }
 end
 ```
 
@@ -75,7 +80,7 @@ It will log all requests and responses by default, but you can add some **option
 
 ```ruby
 def test_stuff
-  DocYoSelf.skip
+  SmarfDoc.skip
   # Blahhh
 end
 ```
@@ -84,7 +89,7 @@ end
 
 ```ruby
 def test_stuff
-  DocYoSelf.note "안녕하세요. This is a note."
+  SmarfDoc.note "안녕하세요. This is a note."
   # Blahhh
 end
 ```

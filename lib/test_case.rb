@@ -1,6 +1,6 @@
 require 'erb'
 
-class DocYoSelf::TestCase
+class SmarfDoc::TestCase
   attr_reader :request, :response, :created_at, :note
   attr_accessor :template
 

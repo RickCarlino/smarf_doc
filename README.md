@@ -6,7 +6,6 @@ Time for this project was provided by my employer, [SmashingBoxes](http://smashi
 
 # Limitations
 
- * **Current focus is MiniTest**. Probably will work with Rspec too, but that's not our focus right now.
  * **Probably not thread safe**. Thread safety isn't a focus for this project right now. Pull requests welcome :-).
 
 
@@ -26,6 +25,8 @@ end
 See test/fake_template.md for template examples.
 
 To run doc generation after every controller spec, put this into your `teardown` method. Or whatever method your test framework of choice will run after *every test*.
+
+## For Minitest Folks
 
 ```ruby
 class ActionController::TestCase < ActiveSupport::TestCase
@@ -50,6 +51,21 @@ def test_some_api
   DocYoSelf.run!(request, response)
 end
 ```
+
+## For RSpec Folks
+
+Put this in your `spec_helper` and smoke it.
+
+```ruby
+RSpec.configure do |config|
+  config.after(:each, type: :controller) do
+    DocYoSelf.run!(request, response)
+  end
+
+  config.after(:suite) { DocYoSelf.finish! }
+end
+```
+
 
 ## Usage
 

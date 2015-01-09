@@ -2,7 +2,7 @@
 
 (Formerly 'DocYoSelf')
 
-[Imgur](http://i.imgur.com/f5mzeRU.png)
+![Smarf][http://i.imgur.com/f5mzeRU.png]
 
 Too many docs spoil the broth.
 

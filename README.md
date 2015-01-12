@@ -41,52 +41,48 @@ Then
 def test_some_api
   get :index, :users
   assert response.status == 200
-  DocYoSelf.new(self)
+  DocYoSelf.new.run!(self, response: response)
 end
 ```
-
-Or
+or
 
 ```ruby
+  def setup
+    @doc_yo_self = DocYoSelf.new
+  end
+
   def teardown
-    DocYoSelf.new(self)
+    @doc_yo_self.run!(self)
   end
 ```
 
-## For RSpec Folks
-
-Put this in your `spec_helper` and smoke it.
-
-```ruby
-RSpec.configure do |config|
-  config.after(:each, type: :controller) do
-    DocYoSelf.run!(request, response)
-  end
-
-  config.after(:suite) { DocYoSelf.finish! }
-end
-```
 
 
-## Usage
+## Options
 
 It will log all requests and responses by default, but you can add some **optional** parameters as well.
-
+Options can be passed as a hash to the `run!` function or directly to the instance methods:
 
 ## Adding notes
 Defaults to the test name
 ```ruby
-DocYoSelf.new(self, note: "This is fun")
+@doc_yo_self.note =  "This is fun"
 ```
 
 ## Output file
-Defaults to the class name
+Defaults to the test class name
 ```ruby
-DocYoSelf.new(self, output_file: "fun.md")
+@doc_yo_self.output_file = "fun.md"
 ```
 
 ## Response
-
+Defaults to self.response
 ```ruby
-DocYoSelf.new(self, response: json)
+@doc_yo_self.response = @json
+```
+
+##request
+Defaults to self.request
+```ruby
+@doc_yo_self.request = other_request
 ```

@@ -1,12 +1,13 @@
 class DocYoSelf
   @@tests = {}
   @@lock = ::Mutex.new
-  attr_accessor :request, :response, :note, :file
+  attr_accessor :request, :response, :note, :file, :skip
 
   # == Usage
-  # DocYoSelf.new(self)
+  # doc_yo_self = DocYoSelf.new
+  # doc_yo_self.run!(self)
   #
-  def initialize(caller, options = {})
+  def run!(caller, options = {})
     @file = options[:output_file]
     @request = options[:request] 
     @response = options[:response] 
@@ -23,7 +24,12 @@ class DocYoSelf
     add_to_tests
   end
 
+  def skip!
+    @skip = true
+  end
+
   def add_to_tests
+    return if skip
     raise "No DocYoSelf output_file specified" if file.blank?
 
     if file[/\//]
@@ -79,9 +85,9 @@ class DocYoSelf
       clean_up!
     end
 
-    #legacy support
-    def run!(request, response, output_file = nil)
-      new(nil, request: request, response: response, output_file: output_file)
+    #Legacy Support
+    def old_run!(request, response, output_file = nil)
+      run!(nil, request: request, response: response, output_file: output_file)
     end
 
     def config(&block)

@@ -15,7 +15,7 @@ Time for this project was provided by my employer, [SmashingBoxes](http://smashi
 ## Setup
 
 In your gemfile:
-`gem 'smarf_doc', group: :test`
+`gem 'smarf_doc', group: :test, github: 'RickCarlino/smarf_doc'`
 
 In  `test_helper.rb`:
 ```ruby

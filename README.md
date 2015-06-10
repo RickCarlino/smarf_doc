@@ -25,7 +25,7 @@ SmarfDoc.config do |c|
 end
 ```
 
-See test/fake_template.md for template examples.
+[See test/fake_template.md for template examples.](https://github.com/RickCarlino/smarf_doc/blob/master/test/fake_template.md)
 
 To run doc generation after every controller spec, put this into your `teardown` method. Or whatever method your test framework of choice will run after *every test*.
 

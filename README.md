@@ -36,7 +36,7 @@ Running it for every test case:
 ```ruby
 class ActionController::TestCase < ActiveSupport::TestCase
   def teardown
-    DocYoSelf.run!(request, response)
+    SmarfDoc.run!(request, response)
   end
 end
 ```
@@ -47,14 +47,14 @@ end
 def test_some_api
   get :index, :users
   assert response.status == 200
-  DocYoSelf.run!(request, response)
+  SmarfDoc.run!(request, response)
 end
 ```
 
 Then put this at the bottom of your `test_helper.rb`:
 
 ```ruby
-MiniTest::Unit.after_tests { DocYoSelf.finish! }
+MiniTest::Unit.after_tests { SmarfDoc.finish! }
 ```
 
 ## Rspec Usage

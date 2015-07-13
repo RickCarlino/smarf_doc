@@ -4,15 +4,11 @@ An auto documentation for Rails. Pop it into your test suite and watch it amaze.
 
 Time for this project was provided by my employer, [SmashingBoxes](http://smashingboxes.com/). What a great place to work.
 
-# Limitations
-
- * **Probably not thread safe**. Thread safety isn't a focus for this project right now. Pull requests welcome :-).
-
 
 ## Setup
 
 In your gemfile:
-`gem 'doc_yo_self', group: :test`
+`gem 'doc_yo_self', github: 'elfassy/doc_yo_self', group: :test`
 
 In  `test_helper.rb`:
 ```ruby

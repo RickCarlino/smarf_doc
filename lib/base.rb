@@ -64,6 +64,7 @@ class DocYoSelf
     end
 
     def sort_by_url(tests)
+      return unless tests
       tests.sort! do |x, y|
         x.request.path <=> y.request.path
       end

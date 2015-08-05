@@ -37,10 +37,10 @@ Then
 def test_some_api
   get :index, :users
   assert response.status == 200
-  DocYoSelf.new.run!(self, response: response)
+  DocYoSelf.new.run!(self)
 end
 ```
-or
+or have it run for all tests (recommended! You can skip! the ones you don't need)
 
 ```ruby
   def setup
@@ -56,29 +56,33 @@ or
 
 ## Options
 
-It will log all requests and responses by default, but you can add some **optional** parameters as well.
 Options can be passed as a hash to the `run!` function or directly to the instance methods:
 
-## Adding notes
-Defaults to the test name
+### Adding notes
+Defaults to the test name. Useful if you'd like to customize the text in your the output docs.
 ```ruby
 @doc_yo_self.note =  "This is fun"
+# or DocYoSelf.new.run!(self, note: "This is fun")
 ```
 
-## Output file
-Defaults to the test class name
+### Output file
+Defaults to the test class name. This is the name of the file in which this test will be added.
 ```ruby
 @doc_yo_self.output_file = "fun.md"
 ```
 
-## Response
-Defaults to self.response
+### Response and Request
+Defaults to `response` and `request` . 
 ```ruby
-@doc_yo_self.response = @json
+@doc_yo_self.response = response
 ```
 
-##request
-Defaults to self.request
+### skip!
+You can easily skip a test with
 ```ruby
-@doc_yo_self.request = other_request
+def test_some_api
+  @doc_yo_self.skip!
+  get :index, :users
+  assert response.status == 200
+end
 ```

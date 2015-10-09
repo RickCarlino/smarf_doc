@@ -21,7 +21,10 @@ class SmarfDoc
 
   def run!(request, response)
     @skip += 1
-    return if @skip == 2 # Gross.
+    if @skip == 2 # Gross
+      @skip = 0
+      return
+    end
     add_test_case(request, response, @note)
     @note = ''
     @skip = 0

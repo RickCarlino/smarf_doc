@@ -54,6 +54,27 @@ class TestBase < SmarfDocTest
     assert_equal 'api/noskip', tests.first.request.path,
       "DYS Did not skip tests."
   end
+  
+  def test_multiple_skips
+    file = SmarfDoc::Conf.output_file
+    tests= SmarfDoc.current.tests
+    first = Request.new("GET", {id: 12}, 'api/noskip1')
+    second = Request.new("GET", {id: 12}, 'api/skip1')
+    third  = Request.new("GET", {id: 12}, 'api/skip2')
+    fourth  = Request.new("GET", {id: 12}, 'api/noskip2')
+    SmarfDoc.run!(first, response)
+    SmarfDoc.skip
+    SmarfDoc.run!(second, response)
+    SmarfDoc.skip
+    SmarfDoc.run!(third, response)
+    SmarfDoc.run!(fourth, response)
+    assert_equal 2, tests.length,
+      "DYS Skipped 2 tests."
+    assert_equal 'api/noskip1', tests[0].request.path,
+      "DYS Did not skip first unskipped test."
+    assert_equal 'api/noskip2', tests[1].request.path,
+      "DYS Did not skip second unskipped test."
+  end
 
   def test_note
     file = SmarfDoc::Conf.output_file

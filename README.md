@@ -12,27 +12,83 @@ Pop it into your test suite and watch it amaze.
 
 Time for this project was provided by my employer, [SmashingBoxes](http://smashingboxes.com/). What a great place to work!
 
-## Setup
 
-In your gemfile:
+## Gem Installation in Rails
+
+In your gemfile add the following to your test group:
+
 `gem 'smarf_doc', group: :test, github: 'RickCarlino/smarf_doc'`
 
-In  `test_helper.rb`:
+Installation differs for RSpec/Minitest, so scroll to the appropriate section for guidance.
+
+## Rspec Installation
+
+Add this to your `rails_helper.rb` It should go outside of other blocks
+(Do not place it inside the `RSpec.configure` block).
 ```ruby
 SmarfDoc.config do |c|
-  c.template_file = 'test/template.md.erb'
+  c.template_file = 'spec/template.md.erb'
   c.output_file   = 'api_docs.md'
 end
 ```
 
-[See test/fake_template.md for template examples.](https://github.com/RickCarlino/smarf_doc/blob/master/test/fake_template.md)
+Add the following line to `spec_helper.rb` inside the `RSpec.configure` block
 
-To run doc generation after every controller spec, put this into your `teardown` method. Or whatever method your test framework of choice will run after *every test*.
+`config.after(:suite) { SmarfDoc.finish! }`
 
-## Minitest Usage
+It should look like this
+```ruby
+RSpec.configure do |config|
+  # Existing code
+  config.after(:suite) { SmarfDoc.finish! }
+end
+```
+#### To run on all controller tests
 
-Running it for every test case:
+Add this to your `spec_helper.rb`
+```ruby
+config.after(:each, type: :controller) do
+  SmarfDoc.run!(request, response)
+end
+```
 
+The whole file should look like this
+```ruby
+RSpec.configure do |config|
+  # Existing code
+  config.after(:each, type: :controller) do
+    SmarfDoc.run!(request, response)
+  end
+  config.after(:suite) { SmarfDoc.finish! }
+end
+```
+#### To run on only select tests
+Just add `SmarfDoc.run!(request, response)` to specific tests
+```ruby
+it "responds with 200" do
+  get :index
+  expect(response).to be_success
+  SmarfDoc.run!(request, response)
+end
+```
+
+## Minitest Installation
+
+Add the code from below to `test_helper.rb`:
+```ruby
+class ActiveSupport::TestCase
+  # Already existing code
+  SmarfDoc.config do |c|
+    c.template_file = 'test/template.md.erb'
+    c.output_file   = 'api_docs.md'
+  end
+  # More code
+end
+
+MiniTest::Unit.after_tests { SmarfDoc.finish! }
+```
+#### To run on all controller tests
+Add this to `test_helper.rb` as well:
 ```ruby
 class ActionController::TestCase < ActiveSupport::TestCase
   def teardown
@@ -41,55 +97,87 @@ class ActionController::TestCase < ActiveSupport::TestCase
 end
 ```
 
-..or if you only want to run it on certain tests, try this:
-
+Your code should look like this:
 ```ruby
-def test_some_api
-  get :index, :users
+class ActiveSupport::TestCase
+  # Already existing code
+  SmarfDoc.config do |c|
+    c.template_file = 'test/template.md.erb'
+    c.output_file   = 'api_docs.md'
+  end
+  # More code
+end
+
+class ActionController::TestCase < ActiveSupport::TestCase
+  def teardown
+    SmarfDoc.run!(request, response)
+  end
+end
+
+MiniTest::Unit.after_tests { SmarfDoc.finish! }
+```
+
+
+#### To run on only select tests
+Just add `SmarfDoc.run!(request, response)` to specific tests
+```ruby
+def get_index
+  get :index
   assert response.status == 200
   SmarfDoc.run!(request, response)
 end
 ```
 
-Then put this at the bottom of your `test_helper.rb`:
+## Setting a template
 
-```ruby
-MiniTest::Unit.after_tests { SmarfDoc.finish! }
+If you copied the code from above, SmarfDoc will look for a template file located at either
+`test/template.md.erb` or `spec/template.md.erb`, depending on your test suite.
+This template may be customized to fit your needs.
+
+```erb
+<%= request.method %>
+<%= request.path %>
+<%= request.params %>
+<%= response.body %>
+<%= information[:message] %>
+<%= note %>
 ```
 
-## Rspec Usage
+## Where to find the docs
 
-Put this in your `spec_helper` and smoke it.
+By default, the docs are output to `api_docs.md` in the root of the Rails project.
+You can change this by altering the config in `test_helper.rb` or `rails_helper.rb`.
 
-```ruby
-RSpec.configure do |config|
-  config.after(:each, type: :controller) do
-    SmarfDoc.run!(request, response)
-  end
+## Additional Features
 
-  config.after(:suite) { SmarfDoc.finish! }
-end
-```
+#### Skipping documentation on tests
 
-
-## Usage
-
-It will log all requests and responses by default, but you can add some **optional** parameters as well.
-
-### Skipping documentation
+To leave certain tests out of the documentation, just add `SmarfDoc.skip` to the test.
 
 ```ruby
-def test_stuff
+it "responds with 200" do
   SmarfDoc.skip
-  # Blahhh
+  # test code
 end
 ```
 
-## Adding notes
+#### Adding information and notes
+SmarfDoc will log all requests and responses by default, but you can add some
+**optional** parameters as well.
 
 ```ruby
-def test_stuff
-  SmarfDoc.note "안녕하세요. This is a note."
-  # Blahhh
+it "responds with 200" do
+  SmarfDoc.note("This endpoint prefers butterscotch")
+  # test code
 end
 ```
+#### OR
+```ruby
+it "responds with 200" do
+  SmarfDoc.information(:message, "This endpoint only responds on Tuesdays")
+  # test code
+end
+```
+
+You can store any information with `:message` or any other key you can think of.
+To access information in the template, just use `<%= information[:message] %>`

@@ -2,7 +2,9 @@ class SmarfDoc
   attr_accessor :tests
   def initialize
     @tests = []
-    @skip = 0 # <= Hate this.
+    @skip = false
+    @note = ''
+    @information = {}
   end
 
   def sort_by_url!
@@ -16,29 +18,31 @@ class SmarfDoc
   end
 
   def note(msg)
-    @note = msg || ''
+    @note = msg
+  end
+
+  def information(key, value)
+    @information[key] = value
   end
 
   def run!(request, response)
-    @skip += 1
-    if @skip == 2 # Gross
-      @skip = 0
+    if @skip
+      @skip = false
       return
     end
-    add_test_case(request, response, @note)
+    add_test_case(request, response)
     @note = ''
-    @skip = 0
     self
   end
 
-  def add_test_case(request, response, note)
-    test = self.class::TestCase.new(request, response, note)
+  def add_test_case(request, response)
+    test = self.class::TestCase.new(request, response, @note, @information)
     test.template = self.class::Conf.template
     self.tests << test
   end
 
   def skip
-    @skip += 1
+    @skip = true
   end
 
   def output_testcases_to_file
@@ -76,8 +80,12 @@ class SmarfDoc
     current.note(msg)
   end
 
+  def self.information(key, value)
+    current.information(key, value)
+  end
+
   def self.current
-    Thread.current[:dys_instance] ||= self.new
+    Thread.current[:instance] ||= self.new
   end
 
   def self.config(&block)

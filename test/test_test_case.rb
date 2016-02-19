@@ -2,16 +2,16 @@ require_relative "test_helper"
 
 class TestTestCase < SmarfDocTest
 
-  def dys
-    @dys ||= SmarfDoc::TestCase.new(request, response)
+  def test_case
+    @test_case ||= SmarfDoc::TestCase.new(request, response)
   end
 
   def test_compile_template
-    template     = "<%= 2 + 2 %>"
-    dys.template = template
-    assert_equal dys.template, template,
+    template = "<%= 2 + 2 %>"
+    test_case.template = template
+    assert_equal test_case.template, template,
       "Could not set a template."
-    assert_equal "4", dys.compile_template,
+    assert_equal "4", test_case.compile_template,
       "Could not compile template"
   end
 
@@ -23,6 +23,6 @@ class TestTestCase < SmarfDocTest
   end
 
   def test_created_at
-    assert dys.created_at.is_a?(Time)
+    assert test_case.created_at.is_a?(Time)
   end
 end

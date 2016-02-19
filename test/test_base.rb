@@ -50,11 +50,11 @@ class TestBase < SmarfDocTest
     SmarfDoc.run!(first, response)
     SmarfDoc.run!(last, response)
     assert_equal 1, tests.length,
-      "DYS Did not skip tests."
+      "Did not skip tests."
     assert_equal 'api/noskip', tests.first.request.path,
-      "DYS Did not skip tests."
+      "Did not skip tests."
   end
-  
+
   def test_multiple_skips
     file = SmarfDoc::Conf.output_file
     tests= SmarfDoc.current.tests
@@ -69,11 +69,11 @@ class TestBase < SmarfDocTest
     SmarfDoc.run!(third, response)
     SmarfDoc.run!(fourth, response)
     assert_equal 2, tests.length,
-      "DYS Skipped 2 tests."
+      "Skipped 2 tests."
     assert_equal 'api/noskip1', tests[0].request.path,
-      "DYS Did not skip first unskipped test."
+      "Did not skip first unskipped test."
     assert_equal 'api/noskip2', tests[1].request.path,
-      "DYS Did not skip second unskipped test."
+      "Did not skip second unskipped test."
   end
 
   def test_note
@@ -85,6 +85,18 @@ class TestBase < SmarfDocTest
     SmarfDoc.run!(first, response)
     SmarfDoc.run!(last, response)
     assert_includes tests.first.compile_template, "안녕하세요",
+      "Could not find note in documentation."
+  end
+
+  def test_information
+    file = SmarfDoc::Conf.output_file
+    tests= SmarfDoc.current.tests
+    first = Request.new("GET", {id: 12}, 'api/skip')
+    last  = Request.new("GET", {id: 12}, 'api/noskip')
+    SmarfDoc.information(:aside, "This controller only responds on Tuesdays")
+    SmarfDoc.run!(first, response)
+    SmarfDoc.run!(last, response)
+    assert_includes tests.first.compile_template, "This controller only responds on Tuesdays",
       "Could not find note in documentation."
   end
 end

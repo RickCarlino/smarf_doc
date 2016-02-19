@@ -4,3 +4,4 @@ You can use ERB to format each test case.
 <%= request.params %>
 <%= response.body %>
 <%= note %>
+<%= information[:aside] %>

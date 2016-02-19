@@ -34,13 +34,13 @@ end
 
 Add the following line to `spec_helper.rb` inside the `RSpec.configure` block
 
-`config.after(:suite) { SmashingDocs.finish! }`
+`config.after(:suite) { SmarfDoc.finish! }`
 
 It should look like this
 ```ruby
 RSpec.configure do |config|
   # Existing code
-  config.after(:suite) { SmashingDocs.finish! }
+  config.after(:suite) { SmarfDoc.finish! }
 end
 ```
 #### To run on all controller tests
@@ -48,7 +48,7 @@ end
 Add this to your `spec_helper.rb`
 ```ruby
 config.after(:each, type: :controller) do
-  SmashingDocs.run!(request, response)
+  SmarfDoc.run!(request, response)
 end
 ```
 
@@ -57,18 +57,18 @@ The whole file should look like this
 RSpec.configure do |config|
   # Existing code
   config.after(:each, type: :controller) do
-    SmashingDocs.run!(request, response)
+    SmarfDoc.run!(request, response)
   end
-  config.after(:suite) { SmashingDocs.finish! }
+  config.after(:suite) { SmarfDoc.finish! }
 end
 ```
 #### To run on only select tests
-Just add `SmashingDocs.run!(request, response)` to specific tests
+Just add `SmarfDoc.run!(request, response)` to specific tests
 ```ruby
 it "responds with 200" do
   get :index
   expect(response).to be_success
-  SmashingDocs.run!(request, response)
+  SmarfDoc.run!(request, response)
 end
 ```
 
@@ -78,21 +78,21 @@ Add the code from below to `test_helper.rb`:
 ```ruby
 class ActiveSupport::TestCase
   # Already existing code
-  SmashingDocs.config do |c|
+  SmarfDoc.config do |c|
     c.template_file = 'test/template.md.erb'
     c.output_file   = 'api_docs.md'
   end
   # More code
 end
 
-MiniTest::Unit.after_tests { SmashingDocs.finish! }
+MiniTest::Unit.after_tests { SmarfDoc.finish! }
 ```
 #### To run on all controller tests
 Add this to `test_helper.rb` as well:
 ```ruby
 class ActionController::TestCase < ActiveSupport::TestCase
   def teardown
-    SmashingDocs.run!(request, response)
+    SmarfDoc.run!(request, response)
   end
 end
 ```
@@ -101,7 +101,7 @@ Your code should look like this:
 ```ruby
 class ActiveSupport::TestCase
   # Already existing code
-  SmashingDocs.config do |c|
+  SmarfDoc.config do |c|
     c.template_file = 'test/template.md.erb'
     c.output_file   = 'api_docs.md'
   end
@@ -110,27 +110,27 @@ end
 
 class ActionController::TestCase < ActiveSupport::TestCase
   def teardown
-    SmashingDocs.run!(request, response)
+    SmarfDoc.run!(request, response)
   end
 end
 
-MiniTest::Unit.after_tests { SmashingDocs.finish! }
+MiniTest::Unit.after_tests { SmarfDoc.finish! }
 ```
 
 
 #### To run on only select tests
-Just add `SmashingDocs.run!(request, response)` to specific tests
+Just add `SmarfDoc.run!(request, response)` to specific tests
 ```ruby
 def get_index
   get :index
   assert response.status == 200
-  SmashingDocs.run!(request, response)
+  SmarfDoc.run!(request, response)
 end
 ```
 
 ## Setting a template
 
-If you copied the code from above, SmashingDocs will look for a template file located at either
+If you copied the code from above, SmarfDoc will look for a template file located at either
 `test/template.md.erb` or `spec/template.md.erb`, depending on your test suite.
 This template may be customized to fit your needs.
 
@@ -139,8 +139,8 @@ This template may be customized to fit your needs.
 <%= request.path %>
 <%= request.params %>
 <%= response.body %>
-<%= information[:note] %>
-<%= aside %>
+<%= information[:message] %>
+<%= note %>
 ```
 
 ## Where to find the docs
@@ -152,24 +152,32 @@ You can change this by altering the config in `test_helper.rb` or `rails_helper.
 
 #### Skipping documentation on tests
 
-To leave certain tests out of the documentation, just add `SmashingDocs.skip` to the test.
+To leave certain tests out of the documentation, just add `SmarfDoc.skip` to the test.
 
 ```ruby
 it "responds with 200" do
-  SmashingDocs.skip
+  SmarfDoc.skip
   # test code
 end
 ```
 
-#### Adding information, e.g. notes
-SmashingDocs will log all requests and responses by default, but you can add some
+#### Adding information and notes
+SmarfDoc will log all requests and responses by default, but you can add some
 **optional** parameters as well.
 
 ```ruby
 it "responds with 200" do
-  SmashingDocs.information(:note, "This endpoint only responds on Tuesdays")
+  SmarfDoc.note("This endpoint prefers butterscotch")
   # test code
 end
 ```
-You can store any information with `:note`, `:message`, or any other key you can think of.
-To access information in the template, just use `<%= information[:key] %>`
+#### OR
+```ruby
+it "responds with 200" do
+  SmarfDoc.information(:message, "This endpoint only responds on Tuesdays")
+  # test code
+end
+```
+
+You can store any information with `:message` or any other key you can think of.
+To access information in the template, just use `<%= information[:message] %>`

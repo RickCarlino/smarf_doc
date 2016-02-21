@@ -1,7 +1,5 @@
 # SmarfDoc
 
-(Formerly 'DocYoSelf')
-
 ![Smarf](http://i.imgur.com/f5mzeRU.png)
 
 Too many docs spoil the broth.
@@ -10,14 +8,11 @@ SmarfDoc lets you turn your controller tests into API docs _without making chang
 
 Pop it into your test suite and watch it amaze.
 
-Time for this project was provided by my employer, [SmashingBoxes](http://smashingboxes.com/). What a great place to work!
-
-
 ## Gem Installation in Rails
 
 In your gemfile add the following to your test group:
 
-`gem 'smarf_doc', group: :test, github: 'RickCarlino/smarf_doc'`
+`gem 'smarf_doc'`
 
 Installation differs for RSpec/Minitest, so scroll to the appropriate section for guidance.
 

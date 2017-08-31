@@ -143,6 +143,8 @@ This template may be customized to fit your needs.
 By default, the docs are output to `api_docs.md` in the root of the Rails project.
 You can change this by altering the config in `test_helper.rb` or `rails_helper.rb`.
 
+Note that docs are not generated if the suite fails.
+
 ## Additional Features
 
 #### Skipping documentation on tests

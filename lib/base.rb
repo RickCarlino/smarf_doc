@@ -60,12 +60,18 @@ class SmarfDoc
     end
   end
 
+  def all_completed?
+    @tests.none? {|t| t.request.nil? }
+  end
+
 # = = = =
 
   def self.finish!
-    current.sort_by_url!
-    current.output_testcases_to_file
-    current.clean_up!
+    if current.all_completed?
+      current.sort_by_url!
+      current.output_testcases_to_file
+      current.clean_up!
+    end
   end
 
   def self.run!(request, response)
